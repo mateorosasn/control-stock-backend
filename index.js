@@ -2,8 +2,8 @@ import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import Producto from "./models/Producto.js";
 
-// Configuración
 dotenv.config();
 
 const app = express();
@@ -11,62 +11,45 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// 🔌 Conexión a MongoDB
-mongoose.connect(process.env.MONGO_URI)
+// 🔌 Conexión MongoDB
+mongoose
+  .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB conectado 🚀"))
-  .catch(err => console.log(err));
-
-// 🧱 Modelo de Turno
-const turnoSchema = new mongoose.Schema({
-  cliente: String,
-  servicio: String
-});
-
-const Turno = mongoose.model("Turno", turnoSchema);
+  .catch((err) => console.log(err));
 
 // 🏠 Ruta principal
 app.get("/", (req, res) => {
-  res.send("Backend Barbería funcionando 💈");
+  res.send("API Control Stock 🚀");
 });
 
-// 📋 Obtener turnos
-app.get("/api/turnos", async (req, res) => {
+// 📋 Obtener productos
+app.get("/api/productos", async (req, res) => {
   try {
-    const turnos = await Turno.find();
-    res.json(turnos);
+    const productos = await Producto.find();
+    res.json(productos);
   } catch (error) {
-    res.status(500).json({ error: "Error al obtener turnos" });
+    res.status(500).json({ mensaje: error.message });
   }
 });
 
-// ➕ Crear turno
-app.post("/api/turnos", async (req, res) => {
+// ➕ Crear producto
+app.post("/api/productos", async (req, res) => {
   try {
-    const nuevoTurno = new Turno({
-      cliente: req.body.cliente,
-      servicio: req.body.servicio
+    const nuevoProducto = new Producto({
+      nombre: req.body.nombre,
+      stock: req.body.stock,
+      descripcion: req.body.descripcion,
+      categoria: req.body.categoria,
     });
 
-    await nuevoTurno.save();
+    const productoGuardado = await nuevoProducto.save();
 
-    res.json(nuevoTurno);
+    res.json(productoGuardado);
   } catch (error) {
-    res.status(500).json({ error: "Error al crear turno" });
+    res.status(500).json({ mensaje: error.message });
   }
 });
 
-// ❌ Eliminar turno
-app.delete("/api/turnos/:id", async (req, res) => {
-  try {
-    await Turno.findByIdAndDelete(req.params.id);
-
-    res.json({ mensaje: "Turno eliminado" });
-  } catch (error) {
-    res.status(500).json({ error: "Error al eliminar turno" });
-  }
-});
-
-// 🚀 Servidor
 app.listen(3000, () => {
   console.log("Servidor en http://localhost:3000");
 });
