@@ -50,6 +50,25 @@ app.post("/api/productos", async (req, res) => {
   }
 });
 
+// ❌ Eliminar producto
+app.delete("/api/productos/:id", async (req, res) => {
+  console.log("INTENTANDO ELIMINAR:", req.params.id);
+
+  try {
+    await Producto.findByIdAndDelete(req.params.id);
+
+    res.json({
+      mensaje: "Producto eliminado",
+    });
+  } catch (error) {
+    console.log("ERROR AL ELIMINAR:", error);
+
+    res.status(500).json({
+      mensaje: error.message,
+    });
+  }
+});
+
 app.listen(3000, () => {
   console.log("Servidor en http://localhost:3000");
 });
