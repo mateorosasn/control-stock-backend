@@ -8,10 +8,11 @@ dotenv.config();
 
 const app = express();
 
+// Middlewares
 app.use(cors());
 app.use(express.json());
 
-// 🔌 Conexión MongoDB
+// 🔌 Conexión a MongoDB
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB conectado 🚀"))
@@ -19,16 +20,19 @@ mongoose
 
 // 🏠 Ruta principal
 app.get("/", (req, res) => {
-  res.send("API Control Stock 🚀");
+  res.send("API Barbería funcionando 💈");
 });
 
-// 📋 Obtener productos
+// 📋 Obtener todos los productos
 app.get("/api/productos", async (req, res) => {
   try {
     const productos = await Producto.find();
-    res.json(productos);
+
+    res.status(200).json(productos);
   } catch (error) {
-    res.status(500).json({ mensaje: error.message });
+    res.status(500).json({
+      mensaje: error.message,
+    });
   }
 });
 
@@ -36,17 +40,19 @@ app.get("/api/productos", async (req, res) => {
 app.post("/api/productos", async (req, res) => {
   try {
     const nuevoProducto = new Producto({
-      Nombre: req.body.nombre,
+      nombre: req.body.nombre,
       stock: req.body.stock,
-      Descripcion: req.body.descripcion,
-      Categoria: req.body.categoria,
+      descripcion: req.body.descripcion,
+      categoria: req.body.categoria,
     });
 
     const productoGuardado = await nuevoProducto.save();
 
-    res.json(productoGuardado);
+    res.status(201).json(productoGuardado);
   } catch (error) {
-    res.status(500).json({ mensaje: error.message });
+    res.status(500).json({
+      mensaje: error.message,
+    });
   }
 });
 
@@ -56,17 +62,21 @@ app.put("/api/productos/:id", async (req, res) => {
     const productoActualizado = await Producto.findByIdAndUpdate(
       req.params.id,
       {
-        Nombre: req.body.nombre,
+        nombre: req.body.nombre,
         stock: req.body.stock,
-        Descripcion: req.body.descripcion,
-        Categoria: req.body.categoria,
+        descripcion: req.body.descripcion,
+        categoria: req.body.categoria,
       },
-      { new: true }
+      {
+        new: true,
+      }
     );
 
-    res.json(productoActualizado);
+    res.status(200).json(productoActualizado);
   } catch (error) {
-    res.status(500).json({ mensaje: error.message });
+    res.status(500).json({
+      mensaje: error.message,
+    });
   }
 });
 
@@ -75,8 +85,8 @@ app.delete("/api/productos/:id", async (req, res) => {
   try {
     await Producto.findByIdAndDelete(req.params.id);
 
-    res.json({
-      mensaje: "Producto eliminado",
+    res.status(200).json({
+      mensaje: "Producto eliminado correctamente",
     });
   } catch (error) {
     res.status(500).json({
@@ -85,6 +95,9 @@ app.delete("/api/productos/:id", async (req, res) => {
   }
 });
 
-app.listen(3000, () => {
-  console.log("Servidor en http://localhost:3000");
+// 🚀 Iniciar servidor
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(`Servidor ejecutándose en http://localhost:${PORT} 🚀`);
 });
