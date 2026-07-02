@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 
-const productoSchema = new mongoose.Schema({
+const servicioSchema = new mongoose.Schema({
   nombre: {
     type: String,
     required: true,
   },
-  stock: {
+  precio: {
     type: Number,
     required: true,
   },
@@ -19,4 +19,4 @@ const productoSchema = new mongoose.Schema({
   },
 });
 
-export default mongoose.model("Producto", productoSchema);
+export default mongoose.model("Servicio", servicioSchema);
