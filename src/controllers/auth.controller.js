@@ -1,10 +1,10 @@
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
 
-// Registrar usuario
+// 🟢 Registrar usuario
 export const registrar = async (req, res) => {
   try {
-    const { nombre, email, password } = req.body;
+    const { nombre, email, password, role } = req.body;
 
     const existe = await User.findOne({ email });
 
@@ -20,12 +20,18 @@ export const registrar = async (req, res) => {
       nombre,
       email,
       password: passwordEncriptada,
+      role: role || "user",
     });
 
     await nuevoUsuario.save();
 
     res.status(201).json({
       message: "Usuario registrado correctamente",
+      usuario: {
+        nombre: nuevoUsuario.nombre,
+        email: nuevoUsuario.email,
+        role: nuevoUsuario.role,
+      },
     });
   } catch (error) {
     res.status(500).json({
@@ -34,8 +40,8 @@ export const registrar = async (req, res) => {
   }
 };
 
-// Login
-export const loginAdmin = async (req, res) => {
+// 🟢 Login
+export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -47,10 +53,7 @@ export const loginAdmin = async (req, res) => {
       });
     }
 
-    const coincide = await bcrypt.compare(
-      password,
-      user.password
-    );
+    const coincide = await bcrypt.compare(password, user.password);
 
     if (!coincide) {
       return res.status(401).json({
@@ -60,7 +63,11 @@ export const loginAdmin = async (req, res) => {
 
     res.json({
       message: "Login exitoso",
-      usuario: user.nombre,
+      usuario: {
+        nombre: user.nombre,
+        email: user.email,
+        role: user.role,
+      },
     });
   } catch (error) {
     res.status(500).json({

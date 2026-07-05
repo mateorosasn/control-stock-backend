@@ -4,17 +4,19 @@ import {
   obtenerTurnos,
   crearTurno,
   eliminarTurno,
+  actualizarTurno,
 } from "../controllers/turno.controller.js";
 
 const router = express.Router();
 
-// - obtener todos los turnos
 router.get("/", obtenerTurnos);
 
-//  crear turno
 router.post("/", crearTurno);
 
-//  eliminar turno 
 router.delete("/:id", eliminarTurno);
+
+router.put("/:id", (req, res) => {
+  res.send("Funcionando  ");
+});
 
 export default router;
