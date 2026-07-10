@@ -13,10 +13,15 @@ const turnoSchema = new mongoose.Schema(
     },
 
     servicio: {
-  type: mongoose.Schema.Types.ObjectId,
-  ref: "Servicio",
-  required: true,
-},
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Servicio",
+      required: true,
+    },
+
+    barbero: {
+      type: String,
+      required: true,
+    },
 
     fecha: {
       type: String,
