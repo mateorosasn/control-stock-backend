@@ -47,6 +47,8 @@ export const login = async (req, res) => {
 
     const user = await User.findOne({ email });
 
+    console.log("Usuario encontrado:", user);
+
     if (!user) {
       return res.status(404).json({
         message: "Usuario no existe",
@@ -70,6 +72,8 @@ export const login = async (req, res) => {
       },
     });
   } catch (error) {
+    console.log(error);
+
     res.status(500).json({
       message: "Error en login",
     });
