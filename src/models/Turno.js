@@ -32,6 +32,11 @@ const turnoSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+
+    estado: {
+      type: String,
+      default: "Pendiente",
+    },
   },
   {
     timestamps: true,
