@@ -18,6 +18,23 @@ export const crearTurno = async (req, res) => {
   try {
     const { nombre, telefono, servicio, barbero, fecha, hora } = req.body;
 
+    // Verificar si el horario ya está ocupado para ese barbero
+    const turnoExistente = await Turno.findOne({
+      barbero,
+      fecha,
+      hora,
+    });
+
+   if (turnoExistente) {
+  console.log("⚠️ Horario ocupado");
+
+  return res.status(400).json({
+    message: "Ese horario ya está ocupado para ese barbero.",
+  });
+}
+
+console.log("✅ Creando turno");
+
     const nuevoTurno = new Turno({
       nombre,
       telefono,
@@ -25,6 +42,7 @@ export const crearTurno = async (req, res) => {
       barbero,
       fecha,
       hora,
+      estado: "Pendiente",
     });
 
     const turnoGuardado = await nuevoTurno.save();
@@ -61,25 +79,20 @@ export const actualizarTurno = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const { nombre, telefono, servicio, barbero, fecha, hora } = req.body;
-
     const turnoActualizado = await Turno.findByIdAndUpdate(
       id,
       {
-        nombre,
-        telefono,
-        servicio,
-        barbero,
-        fecha,
-        hora,
+        ...req.body,
       },
       {
         new: true,
-      },
-    );
+      }
+    ).populate("servicio");
 
     res.json(turnoActualizado);
   } catch (error) {
+    console.log(error);
+
     res.status(500).json({
       message: "Error al actualizar turno",
     });

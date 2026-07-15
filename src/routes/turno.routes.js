@@ -9,14 +9,16 @@ import {
 
 const router = express.Router();
 
+// Obtener todos los turnos
 router.get("/", obtenerTurnos);
 
+// Crear un turno
 router.post("/", crearTurno);
 
-router.delete("/:id", eliminarTurno);
+// Actualizar un turno (incluye cambiar el estado a Confirmado)
+router.put("/:id", actualizarTurno);
 
-router.put("/:id", (req, res) => {
-  res.send("Funcionando  ");
-});
+// Eliminar un turno
+router.delete("/:id", eliminarTurno);
 
 export default router;
