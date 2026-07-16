@@ -76,6 +76,14 @@ mongoose
   .then(() => console.log("MongoDB conectado 🚀"))
   .catch((err) => console.log("Error MongoDB:", err));
 
+// Error 404 - Ruta no encontrada
+app.use((req, res) => {
+  res.status(404).json({
+    status: 404,
+    message: "Ruta no encontrada",
+  });
+});
+
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
