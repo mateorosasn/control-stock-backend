@@ -6,6 +6,26 @@ export const registrar = async (req, res) => {
   try {
     const { nombre, email, password, role } = req.body;
 
+    if (!nombre || !email || !password) {
+      return res.status(400).json({
+        message: "Todos los campos son obligatorios",
+      });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).json({
+        message: "La contraseña debe tener mínimo 6 caracteres",
+      });
+    }
+
+    const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailValido.test(email)) {
+      return res.status(400).json({
+        message: "El email ingresado no es válido",
+      });
+    }
+
     const existe = await User.findOne({ email });
 
     if (existe) {
@@ -28,6 +48,7 @@ export const registrar = async (req, res) => {
     res.status(201).json({
       message: "Usuario registrado correctamente",
       usuario: {
+        _id: nuevoUsuario._id,
         nombre: nuevoUsuario.nombre,
         email: nuevoUsuario.email,
         role: nuevoUsuario.role,
@@ -39,15 +60,18 @@ export const registrar = async (req, res) => {
     });
   }
 };
-
 // 🟢 Login
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email });
+    if (!email || !password) {
+      return res.status(400).json({
+        message: "Todos los campos son obligatorios",
+      });
+    }
 
-    console.log("Usuario encontrado:", user);
+    const user = await User.findOne({ email });
 
     if (!user) {
       return res.status(404).json({
@@ -63,9 +87,10 @@ export const login = async (req, res) => {
       });
     }
 
-    res.json({
+    return res.status(200).json({
       message: "Login exitoso",
       usuario: {
+        _id: user._id,
         nombre: user.nombre,
         email: user.email,
         role: user.role,
@@ -74,7 +99,7 @@ export const login = async (req, res) => {
   } catch (error) {
     console.log(error);
 
-    res.status(500).json({
+    return res.status(500).json({
       message: "Error en login",
     });
   }

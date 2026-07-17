@@ -2,6 +2,12 @@ import mongoose from "mongoose";
 
 const turnoSchema = new mongoose.Schema(
   {
+    usuario: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+
     nombre: {
       type: String,
       required: true,
