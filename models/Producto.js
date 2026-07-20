@@ -1,22 +1,19 @@
 import mongoose from "mongoose";
 
 const productoSchema = new mongoose.Schema({
-  Nombre: {
+  nombre: {
     type: String,
     required: true,
   },
-
   stock: {
     type: Number,
     required: true,
   },
-
-  Descripcion: {
+  descripcion: {
     type: String,
     required: true,
   },
-
-  Categoria: {
+  categoria: {
     type: String,
     required: true,
   },
