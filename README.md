@@ -1,334 +1,156 @@
-# 💈 Barbería Premium - Backend
+# Backend - Barbería 💈
 
-## 📖 Descripción
+## Descripción del proyecto
 
-El backend de **Barbería Premium** fue desarrollado utilizando Node.js y Express con el objetivo de brindar una API REST segura, organizada y escalable para la gestión completa de la aplicación.
+Este proyecto corresponde al backend de una aplicación web para la gestión de una barbería.
 
-Su función principal es administrar la comunicación entre el frontend y la base de datos MongoDB Atlas, procesando todas las solicitudes relacionadas con usuarios, servicios y turnos.
+El objetivo principal del sistema es permitir la administración de turnos, servicios y usuarios, brindando una conexión entre la aplicación frontend y una base de datos para almacenar la información de manera organizada y segura.
 
-La API permite realizar operaciones CRUD, gestionar la autenticación de usuarios y validar la información antes de almacenarla en la base de datos.
-
----
-
-# 🎯 Objetivos
-
-El backend fue desarrollado para:
-
-- Centralizar toda la lógica del sistema.
-- Gestionar la información almacenada en MongoDB.
-- Validar los datos recibidos desde el frontend.
-- Permitir la autenticación de usuarios.
-- Administrar los turnos de la barbería.
-- Gestionar los servicios ofrecidos.
-- Responder correctamente mediante códigos HTTP.
+El backend fue desarrollado para manejar la lógica del negocio, controlar las solicitudes realizadas por los usuarios y administrar la información almacenada.
 
 ---
 
-# 🚀 Tecnologías utilizadas
+## Tecnologías utilizadas
 
-- Node.js
-- Express.js
-- MongoDB Atlas
-- Mongoose
-- bcrypt
-- dotenv
-- cors
-- Nodemon
+Para el desarrollo del backend se utilizaron las siguientes tecnologías:
 
----
+- Node.js: entorno de ejecución utilizado para desarrollar la aplicación del servidor.
 
-# 📂 Arquitectura del Proyecto
+- Express.js: framework utilizado para la creación de rutas, manejo de solicitudes y respuestas del servidor.
 
-El proyecto sigue una arquitectura cliente-servidor.
+- MongoDB: base de datos utilizada para almacenar usuarios, servicios y turnos.
 
-El backend recibe solicitudes HTTP desde el frontend desarrollado en React, procesa la información mediante Express y utiliza Mongoose para interactuar con la base de datos MongoDB Atlas.
+- Mongoose: herramienta utilizada para conectar la aplicación con MongoDB y trabajar con modelos de datos.
 
-Cada petición es validada antes de ejecutarse y finalmente se devuelve una respuesta al cliente utilizando los códigos HTTP correspondientes.
+- JavaScript: lenguaje utilizado para desarrollar toda la lógica del backend.
+
+- Dotenv: utilizado para manejar variables de configuración del proyecto.
+
+- Bcrypt: utilizado para proteger las contraseñas de los usuarios mediante encriptación.
 
 ---
 
-# 🗄 Base de Datos
+## Funcionalidades principales
 
-La aplicación utiliza **MongoDB Atlas** como base de datos en la nube.
+El backend permite realizar las siguientes acciones:
 
-Actualmente se administran las siguientes colecciones:
+### Gestión de usuarios
 
-## Usuarios
+El sistema cuenta con un módulo de autenticación de usuarios que permite:
 
-Almacena:
-
-- Nombre de usuario.
-- Contraseña cifrada mediante bcrypt.
-- Rol del usuario (Administrador o Cliente).
-
----
-
-## Servicios
-
-Cada servicio contiene información como:
-
-- Nombre.
-- Precio.
-- Descripción.
-- Duración.
-
-Estos servicios son consumidos por el frontend para que el cliente pueda seleccionar el tratamiento deseado al reservar un turno.
+- Registrar nuevos usuarios.
+- Validar que los campos obligatorios estén completos.
+- Controlar que los correos electrónicos tengan un formato válido.
+- Validar la longitud mínima de las contraseñas.
+- Evitar registros duplicados.
+- Encriptar las contraseñas antes de almacenarlas.
+- Permitir el inicio de sesión mediante correo y contraseña.
 
 ---
 
-## Turnos
+### Gestión de turnos
 
-Cada turno registra:
+El sistema permite administrar los turnos de la barbería.
 
-- Nombre del cliente.
-- Número de teléfono.
-- Servicio seleccionado.
-- Barbero.
-- Fecha.
-- Hora.
-- Estado del turno.
+Las funcionalidades implementadas son:
 
-Además, el sistema controla que no existan horarios ocupados para evitar reservas duplicadas.
+- Crear nuevos turnos.
+- Obtener todos los turnos registrados.
+- Actualizar información de un turno.
+- Eliminar turnos.
 
----
+Además cuenta con validaciones para mejorar el funcionamiento:
 
-# 📡 API REST
-
-La aplicación implementa una API REST que permite la comunicación entre el frontend y la base de datos.
-
----
-
-## Autenticación
-
-### POST /api/auth/register
-
-Permite registrar nuevos usuarios.
+- Verificación de campos obligatorios.
+- Validación del número de teléfono.
+- Control de fechas anteriores.
+- Control de disponibilidad de horarios.
+- Evitar que un mismo barbero tenga dos turnos en la misma fecha y horario.
+- Manejo del estado del turno, pudiendo diferenciar turnos pendientes y confirmados.
 
 ---
 
-### POST /api/auth/login
+### Gestión de servicios
 
-Permite iniciar sesión verificando la contraseña cifrada.
+El backend también administra los servicios ofrecidos por la barbería.
 
----
+Permite:
 
-## Turnos
+- Crear servicios.
+- Mostrar servicios disponibles.
+- Actualizar servicios existentes.
+- Eliminar servicios.
 
-### GET /api/turnos
-
-Obtiene todos los turnos registrados.
-
----
-
-### POST /api/turnos
-
-Crea un nuevo turno.
-
-Antes de guardar la información se realizan distintas validaciones para evitar errores.
+Los servicios se almacenan en la base de datos y son utilizados al momento de reservar un turno.
 
 ---
 
-### PUT /api/turnos/:id
+## Organización del proyecto
 
-Actualiza un turno existente.
+La estructura del backend se encuentra organizada separando responsabilidades:
 
-Permite modificar:
+- Models: contiene los modelos utilizados para representar los datos de usuarios, servicios y turnos.
 
-- Fecha
-- Hora
-- Servicio
-- Estado
-- Barbero
+- Controllers: contiene la lógica necesaria para procesar las solicitudes y respuestas.
 
----
+- Routes: contiene las rutas encargadas de conectar las peticiones con los controladores correspondientes.
 
-### DELETE /api/turnos/:id
-
-Elimina un turno de la base de datos.
+- Configuración principal: contiene la conexión con la base de datos y la configuración general del servidor.
 
 ---
 
-## Servicios
+## Seguridad
 
-### GET /api/servicios
+Para mejorar la seguridad del sistema se implementaron diferentes medidas:
 
-Obtiene todos los servicios.
-
----
-
-### POST /api/servicios
-
-Registra un nuevo servicio.
+- Encriptación de contraseñas mediante Bcrypt.
+- Validación de datos recibidos desde el cliente.
+- Manejo de errores mediante respuestas controladas.
+- Separación de lógica entre rutas, controladores y modelos.
 
 ---
 
-### PUT /api/servicios/:id
+## Base de datos
 
-Actualiza un servicio existente.
+La aplicación utiliza MongoDB como sistema de almacenamiento.
 
----
+Dentro de la base de datos se encuentran diferentes colecciones:
 
-### DELETE /api/servicios/:id
+- Usuarios: almacena la información de las cuentas creadas.
 
-Elimina un servicio.
+- Servicios: contiene los servicios disponibles de la barbería.
 
----
+- Turnos: guarda las reservas realizadas por los clientes.
 
-# 🔐 Seguridad
-
-Para mejorar la seguridad del sistema se implementaron distintas medidas.
-
-Entre ellas:
-
-- Contraseñas cifradas utilizando bcrypt.
-- Variables de entorno mediante dotenv.
-- Validaciones de datos.
-- Restricción de operaciones mediante roles.
-- Respuestas HTTP apropiadas.
+La comunicación con la base de datos se realiza utilizando Mongoose.
 
 ---
 
-# ⚠️ Manejo de Errores
+## Manejo de errores
 
-El backend responde utilizando códigos HTTP para informar correctamente el resultado de cada solicitud.
+El backend cuenta con controles para responder correctamente ante diferentes situaciones:
 
-Entre ellos:
+- Datos incompletos.
+- Usuarios existentes.
+- Credenciales incorrectas.
+- Horarios ocupados.
+- Rutas inexistentes.
+- Errores internos del servidor.
 
-- 200 OK
-- 201 Created
-- 400 Bad Request
-- 401 Unauthorized
-- 404 Not Found
-- 500 Internal Server Error
-
-El Error 404 es enviado por el backend cuando una ruta no existe y posteriormente es consumido por el frontend para mostrar una página personalizada.
+También posee una respuesta personalizada para rutas no encontradas.
 
 ---
 
-# 🔄 Flujo de Funcionamiento
+## Objetivo del backend
 
-Cliente
+El objetivo principal del backend es proporcionar una estructura organizada y segura que permita gestionar el funcionamiento interno de la aplicación de barbería.
 
-↓
-
-Frontend (React)
-
-↓
-
-Axios
-
-↓
-
-API REST (Express)
-
-↓
-
-Controladores
-
-↓
-
-Modelos (Mongoose)
-
-↓
-
-MongoDB Atlas
-
-↓
-
-Respuesta HTTP
-
-↓
-
-Frontend
+Se encarga de administrar la información, procesar las solicitudes del frontend y garantizar que los datos sean almacenados correctamente.
 
 ---
 
-# ▶️ Instalación
+## Estado del proyecto
 
-Clonar el repositorio
+Backend finalizado y funcional.
 
-```bash
-git clone URL_DEL_BACKEND
-```
-
-Ingresar al proyecto
-
-```bash
-cd backend
-```
-
-Instalar dependencias
-
-```bash
-npm install
-```
-
-Crear un archivo
-
-```env
-.env
-```
-
-Agregar
-
-```env
-MONGO_URI=tu_uri_de_mongodb
-PORT=3000
-```
-
-Ejecutar el servidor
-
-```bash
-npm run dev
-```
-
----
-
-# 📂 Organización del Proyecto
-
-```
-backend/
-
-src/
-│
-├── controllers/
-├── models/
-├── routes/
-├── middleware/
-├── config/
-│
-index.js
-package.json
-```
-
----
-
-# 🌱 Posibles Mejoras
-
-El proyecto podrá ampliarse incorporando nuevas funcionalidades como:
-
-- Recordatorios automáticos por correo electrónico.
-- Sistema de notificaciones.
-- Calendario interactivo.
-- Estadísticas para administradores.
-- Gestión completa de clientes.
-- Historial de reservas.
-- Integración con pagos online.
-
----
-
-# 👨‍💻 Autor
-
-**Mateo Rosas**
-
-Proyecto desarrollado como trabajo final para **Rolling Code School**, aplicando una arquitectura Full Stack basada en React, Node.js, Express y MongoDB Atlas.
-
----
-
-# 📌 Estado del Proyecto
-
-🟢 Desarrollo avanzado.
-
-Actualmente el backend implementa la mayor parte de las funcionalidades previstas, incluyendo autenticación, operaciones CRUD, validaciones, integración con MongoDB Atlas y manejo de errores HTTP.
-
-Se encuentra preparado para su despliegue en producción y futuras mejoras.
+Cuenta con conexión a base de datos, autenticación de usuarios, gestión de turnos, gestión de servicios, validaciones y manejo de errores.

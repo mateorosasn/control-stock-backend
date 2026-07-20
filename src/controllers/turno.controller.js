@@ -16,8 +16,19 @@ export const obtenerTurnos = async (req, res) => {
 // Crear turno
 export const crearTurno = async (req, res) => {
   try {
-    const { nombre, telefono, servicio, barbero, fecha, hora, usuario } =
-      req.body;
+    
+
+
+
+    const {
+  usuario,
+  nombre,
+  telefono,
+  servicio,
+  barbero,
+  fecha,
+  hora,
+} = req.body;
     // Validar campos obligatorios
     if (!nombre || !telefono || !servicio || !barbero || !fecha || !hora) {
       return res.status(400).json({
@@ -55,15 +66,15 @@ export const crearTurno = async (req, res) => {
     }
 
     const nuevoTurno = new Turno({
-      usuario,
-      nombre,
-      telefono,
-      servicio,
-      barbero,
-      fecha,
-      hora,
-      estado: "Pendiente",
-    });
+  usuario,
+  nombre,
+  telefono,
+  servicio,
+  barbero,
+  fecha,
+  hora,
+  estado: "Pendiente",
+});
 
     const turnoGuardado = await nuevoTurno.save();
 
