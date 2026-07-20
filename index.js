@@ -2,73 +2,90 @@ import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import Producto from "./models/Producto.js";
+
+import Servicio from "./src/models/servicio.js";
+import turnoRoutes from "./src/routes/turno.routes.js";
+import authRoutes from "./src/routes/auth.routes.js";
 
 dotenv.config();
 
 const app = express();
 
+// Middlewares
 app.use(cors());
 app.use(express.json());
 
-// 🔌 Conexión MongoDB
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB conectado 🚀"))
-  .catch((err) => console.log(err));
+// Rutas
+app.use("/api/auth", authRoutes);
+app.use("/api/turnos", turnoRoutes);
 
-// 🏠 Ruta principal
+// Ruta principal
 app.get("/", (req, res) => {
   res.send("API Control Stock 🚀");
 });
 
-// 📋 Obtener productos
-app.get("/api/productos", async (req, res) => {
+// Obtener todos los servicios
+app.get("/api/servicios", async (req, res) => {
   try {
-    const productos = await Producto.find();
-    res.json(productos);
+    const servicios = await Servicio.find();
+    res.json(servicios);
   } catch (error) {
     res.status(500).json({ mensaje: error.message });
   }
 });
 
-// ➕ Crear producto
-app.post("/api/productos", async (req, res) => {
+// Crear servicio
+app.post("/api/servicios", async (req, res) => {
   try {
-    const nuevoProducto = new Producto({
-      nombre: req.body.nombre,
-      stock: req.body.stock,
-      descripcion: req.body.descripcion,
-      categoria: req.body.categoria,
-    });
-
-    const productoGuardado = await nuevoProducto.save();
-
-    res.json(productoGuardado);
+    const nuevoServicio = new Servicio(req.body);
+    const servicioGuardado = await nuevoServicio.save();
+    res.status(201).json(servicioGuardado);
   } catch (error) {
     res.status(500).json({ mensaje: error.message });
   }
 });
 
-// ❌ Eliminar producto
-app.delete("/api/productos/:id", async (req, res) => {
-  console.log("INTENTANDO ELIMINAR:", req.params.id);
-
+// Actualizar servicio
+app.put("/api/servicios/:id", async (req, res) => {
   try {
-    await Producto.findByIdAndDelete(req.params.id);
+    const servicioActualizado = await Servicio.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true },
+    );
 
-    res.json({
-      mensaje: "Producto eliminado",
-    });
+    res.json(servicioActualizado);
   } catch (error) {
-    console.log("ERROR AL ELIMINAR:", error);
-
-    res.status(500).json({
-      mensaje: error.message,
-    });
+    res.status(500).json({ mensaje: error.message });
   }
 });
 
-app.listen(3000, () => {
-  console.log("Servidor en http://localhost:3000");
+// Eliminar servicio
+app.delete("/api/servicios/:id", async (req, res) => {
+  try {
+    await Servicio.findByIdAndDelete(req.params.id);
+    res.json({ mensaje: "Servicio eliminado" });
+  } catch (error) {
+    res.status(500).json({ mensaje: error.message });
+  }
+});
+
+// Conexión a MongoDB
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log("MongoDB conectado 🚀"))
+  .catch((err) => console.log("Error MongoDB:", err));
+
+// Error 404 - Ruta no encontrada
+app.use((req, res) => {
+  res.status(404).json({
+    status: 404,
+    message: "Ruta no encontrada",
+  });
+});
+
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(`Servidor ejecutándose en http://localhost:${PORT} 🚀`);
 });
